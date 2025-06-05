@@ -1,0 +1,8 @@
+lex lexer.l
+yacc -d parser.y
+gcc lex.yy.c y.tab.c -ll -ly -o calc
+./calc
+
+
+
+Write YACC program to evaluate arithmetic expression involving operators: +, -, *,

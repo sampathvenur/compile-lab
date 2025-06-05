@@ -1,0 +1,7 @@
+lex lexer.l
+yacc -d parser.y
+gcc lex.yy.c y.tab.c -ll -o prog
+./prog < input.c
+
+8. Write YACC program to recognize valid identifier, operators and keywords in the
+given text (C program) file.
