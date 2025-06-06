@@ -1,6 +1,6 @@
 lex remove_comments.l
 gcc lex.yy.c -o remove_comments -ll
-./remove_comments < input.c > output.c
+./remove_comments
 
 
 Write a LEX program to eliminate comment lines in a C program and copy the

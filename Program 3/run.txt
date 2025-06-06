@@ -1,7 +1,6 @@
-lex lexer.l
 yacc -d parser.y
-gcc lex.yy.c y.tab.c -ll -ly -o prog
-./prog
+gcc y.tab.c -o parser
+./parser
 
 
 

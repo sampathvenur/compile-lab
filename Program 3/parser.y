@@ -1,18 +1,24 @@
 %{
 #include <stdio.h>
-void yyerror(char *s) { printf("invalid string\n"); }
+int yylex(), yyerror(char *s) { puts("invalid string"); return 0; }
 %}
 
+%token A B
+
 %%
-S: A 'b' { printf("valid string\n"); }
+S: A B { puts("valid string"); }
  ;
 
 A: /* empty */
- | A 'a'
+ | A A
  ;
-%%
 
-int main() {
-    printf("enter a string:\n");
-    return yyparse();
+%%
+int yylex() {
+    int c = getchar();
+    if (c=='a') return A;
+    if (c=='b') return B;
+    if (c=='\n') return 0;
+    return -1;
 }
+int main() { return yyparse(); }

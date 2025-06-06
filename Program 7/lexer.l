@@ -1,25 +1,27 @@
 %{
-int comments = 0;
+#include<stdio.h>
+#include<stdlib.h>
+int comment=0;
+int state=1;
 %}
-
-"/*"(.|\n)*?"*/" {
-    // Count newlines inside block comment
-    for (int i = 0; yytext[i]; i++)
-        if (yytext[i] == '\n') comments++;
-}
-
-"//".* {
-    comments++;   // Count single-line comment
-}
-
-\n      { ECHO; }
-[^/\n]+ { ECHO; }
-.       { ECHO; }
-
 %%
-
-int main() {
-    yylex();
-    printf("\nTotal comment lines: %d\n", comments);
-    return 0;
+"//".*\n { comment++;}
+"/*" { state=0;}
+"*/" {if(state==0)
+comment++;
+state=1;}
+.|\n {if(state==1) 
+fprintf(yyout,"%s",yytext);}
+%%
+void main()
+{
+char inpfile[500],outfile[500];
+printf("enter input file name\n");
+scanf("%s",inpfile);
+printf("Enter output file name\n");
+scanf("%s",outfile);
+yyin=fopen(inpfile,"r");
+yyout=fopen(outfile,"w");
+yylex();
+printf("Total no. of comment line is: %d\n",comment);
 }

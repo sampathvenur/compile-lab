@@ -1,44 +1,33 @@
 %{
 #include <stdio.h>
-int yylex(void);
-void yyerror(char *s){ printf("%s\n", s); }
-int err=0;
+#include <stdlib.h>
+int yylex(), yyerror();
 %}
 
 %token NUM
 %left '+' '-'
-%left '*' '/'
-%nonassoc UMINUS
+%left '*'
 
 %%
+S: E { printf("= %d\n", $1); }
+ ;
 
-input:
-    /* empty */
-  | input expr '\n' {
-      if (!err) printf("%d\n", $2);
-      else {
-        printf("Divide by Zero error\n");
-        err=0;
-      }
-      printf("------------------------------------------------------------------------------------------------------------------------\n\n");
-    }
-  ;
-
-expr:
-    expr '+' expr { $$=$1+$3; }
-  | expr '-' expr { $$=$1-$3; }
-  | expr '*' expr { $$=$1*$3; }
-  | expr '/' expr {
-      if ($3==0) err=1; else $$=$1/$3;
-    }
-  | '-' expr %prec UMINUS { $$=-$2; }
-  | '(' expr ')' { $$=$2; }
-  | NUM { $$=$1; }
-  ;
+E: E '+' E { $$ = $1 + $3; }
+ | E '-' E { $$ = $1 - $3; }
+ | E '*' E { $$ = $1 * $3; }
+ | NUM     { $$ = $1; }
+ ;
 
 %%
-int main(){
-    printf("Enter an expression:\n");
-    yyparse();
-    return 0;
+int yylex() {
+  int c;
+  while ((c = getchar()) == ' ' || c == '\n');
+  if (isdigit(c)) {
+    ungetc(c, stdin);
+    scanf("%d", &yylval);
+    return NUM;
+  }
+  return c;
 }
+int yyerror() { return 0; }
+int main() { return yyparse(); }
